@@ -21,6 +21,18 @@
 
 
 //175 ticks per mm
+int debounceRead(int CODE){
+  int one = digitalRead(CODE);
+  delay(1);
+  int two = digitalRead(CODE);
+  if(one == two){
+    return one;
+  }
+  else{
+    delay(1);
+    return debounceRead(CODE);
+  }
+}
 
 ros::NodeHandle nh;
 double position_x;
@@ -28,9 +40,9 @@ double position_y;
 double position_z;
 
 void reset(){
-  if(digitalRead(TOP_X)){
+  if(debounceRead(TOP_X)){
     digitalWrite(DIR_X, HIGH);
-    while(digitalRead(TOP_X)){
+    while(debounceRead(TOP_X)){
       digitalWrite(STEP_X, LOW);
       delay(1);
       digitalWrite(STEP_X, HIGH);
@@ -38,7 +50,7 @@ void reset(){
     }
   } else{
     digitalWrite(DIR_X, LOW);
-    while(!digitalRead(TOP_X)){
+    while(!debounceRead(TOP_X)){
       digitalWrite(STEP_X, LOW);
       delay(1);
       digitalWrite(STEP_X, HIGH);
@@ -46,9 +58,9 @@ void reset(){
     }
   }
 
-  if(digitalRead(TOP_Y)){
+  if(debounceRead(TOP_Y)){
     digitalWrite(DIR_Y, HIGH);
-    while(digitalRead(TOP_Y)){
+    while(debounceRead(TOP_Y)){
       digitalWrite(STEP_Y, LOW);
       delay(1);
       digitalWrite(STEP_Y, HIGH);
@@ -56,7 +68,7 @@ void reset(){
     }
   } else{
     digitalWrite(DIR_Y, LOW);
-    while(!digitalRead(TOP_Y)){
+    while(!debounceRead(TOP_Y)){
       digitalWrite(STEP_Y, LOW);
       delay(1);
       digitalWrite(STEP_Y, HIGH);
@@ -64,9 +76,9 @@ void reset(){
     }
   }
 
-  if(digitalRead(TOP_Z)){
+  if(debounceRead(TOP_Z)){
     digitalWrite(DIR_Z, HIGH);
-    while(digitalRead(TOP_Z)){
+    while(debounceRead(TOP_Z)){
       digitalWrite(STEP_Z, LOW);
       delay(1);
       digitalWrite(STEP_Z, HIGH);
@@ -74,7 +86,7 @@ void reset(){
     }
   } else{
     digitalWrite(DIR_Z, LOW);
-    while(!digitalRead(TOP_Z)){
+    while(!debounceRead(TOP_Z)){
       digitalWrite(STEP_Z, LOW);
       delay(1);
       digitalWrite(STEP_Z, HIGH);
@@ -121,9 +133,9 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
       digitalWrite(STEP_X, HIGH);
       delay(1);
 
-      if(!(digitalRead(TOP_X) && digitalRead(BOTTOM_X))){
+      if(!(debounceRead(TOP_X) && debounceRead(BOTTOM_X))){
           digitalWrite(DIR_X, HIGH);
-          while(!(digitalRead(TOP_X) && digitalRead(BOTTOM_X))){
+          while(!(debounceRead(TOP_X) && debounceRead(BOTTOM_X))){
             digitalWrite(STEP_X, LOW);
             delay(1);
             digitalWrite(STEP_X, HIGH);
@@ -147,9 +159,9 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
       digitalWrite(STEP_X, HIGH);
       delay(1);
 
-      if(!(digitalRead(TOP_X) && digitalRead(BOTTOM_X))){
+      if(!(debounceRead(TOP_X) && debounceRead(BOTTOM_X))){
           digitalWrite(DIR_X, LOW);
-          while(!(digitalRead(TOP_X) && digitalRead(BOTTOM_X))){
+          while(!(debounceRead(TOP_X) && debounceRead(BOTTOM_X))){
             digitalWrite(STEP_X, LOW);
             delay(1);
             digitalWrite(STEP_X, HIGH);
@@ -181,9 +193,9 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
       //digitalWrite(13, HIGH);
       delay(1);
 
-      if(!(digitalRead(TOP_Y) && digitalRead(BOTTOM_Y))){
+      if(!(debounceRead(TOP_Y) && debounceRead(BOTTOM_Y))){
           digitalWrite(DIR_Y, HIGH);
-          while(!(digitalRead(TOP_Y) && digitalRead(BOTTOM_Y))){
+          while(!(debounceRead(TOP_Y) && debounceRead(BOTTOM_Y))){
             digitalWrite(STEP_Y, LOW);
             delay(1);
             digitalWrite(STEP_Y, HIGH);
@@ -208,9 +220,9 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
       //digitalWrite(13, HIGH);
       delay(1);
 
-      if(!(digitalRead(TOP_Y) && digitalRead(BOTTOM_Y))){
+      if(!(debounceRead(TOP_Y) && debounceRead(BOTTOM_Y))){
           digitalWrite(DIR_Y, LOW);
-          while(!(digitalRead(TOP_X) && digitalRead(BOTTOM_Y))){
+          while(!(debounceRead(TOP_X) && debounceRead(BOTTOM_Y))){
             digitalWrite(STEP_Y, LOW);
             delay(1);
             digitalWrite(STEP_Y, HIGH);
@@ -240,9 +252,9 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
       //debug_msg.data = i;
       //debug.publish(&debug_msg);
 
-      if(!(digitalRead(TOP_Z) && digitalRead(BOTTOM_Z))){
+      if(!(debounceRead(TOP_Z) && debounceRead(BOTTOM_Z))){
           digitalWrite(DIR_Z, HIGH);
-          while(!(digitalRead(TOP_Z) && digitalRead(BOTTOM_Z))){
+          while(!(debounceRead(TOP_Z) && debounceRead(BOTTOM_Z))){
             digitalWrite(STEP_Z, LOW);
             delay(1);
             digitalWrite(STEP_Z, HIGH);
@@ -267,9 +279,9 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
       //debug_msg.data = i;
       //debug.publish(&debug_msg);
 
-      if(!(digitalRead(TOP_Z) && digitalRead(BOTTOM_Z))){
+      if(!(debounceRead(TOP_Z) && debounceRead(BOTTOM_Z))){
           digitalWrite(DIR_Z, LOW);
-          while(!(digitalRead(TOP_Z) && digitalRead(BOTTOM_Z))){
+          while(!(debounceRead(TOP_Z) && debounceRead(BOTTOM_Z))){
             digitalWrite(STEP_Z, LOW);
             delay(1);
             digitalWrite(STEP_Z, HIGH);
