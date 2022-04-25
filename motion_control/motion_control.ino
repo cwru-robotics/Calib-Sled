@@ -19,8 +19,10 @@
 #define TOP_Y 10
 #define TOP_Z 8
 
+#define TICKS_PER_METER_X 204200.0
+#define TICKS_PER_METER_Y 204200.0
+#define TICKS_PER_METER_Z 164000.0
 
-//175 ticks per mm
 int debounceRead(int CODE){
   int one = digitalRead(CODE);
   delay(1);
@@ -122,7 +124,7 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
     digitalWrite(DIR_X, LOW);
     //Find the difference between current position and desired position in mm.
     //Multiply by ticks per mm.
-    double rotations = (x - position_x) * 175000.0;
+    double rotations = (x - position_x) * TICKS_PER_METER_X;
     //debug_msg.data = rotations;
     //debug.publish(&debug_msg);
     
@@ -142,14 +144,14 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
             delay(1);
           }
           break;
-          position_x = position_x + i / 175000.0;
+          position_x = position_x + i / TICKS_PER_METER_X;
       }
       //debug.publish(&debug_msg);
     }
   } else{//If position requested is < current position
     //Set direction to 5 volts wrt board
     digitalWrite(DIR_X, HIGH);
-    double rotations = (position_x - x) / 175000.0;
+    double rotations = (position_x - x) * TICKS_PER_METER_X;
     //debug_msg.data = rotations;
     //debug.publish(&debug_msg);
     //Rotate (up and then down output making a square wave) that many times.
@@ -167,7 +169,7 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
             digitalWrite(STEP_X, HIGH);
             delay(1);
           }
-          position_x = position_x - i / 175000.0;
+          position_x = position_x - i / TICKS_PER_METER_X;
           break;
       }
     }
@@ -180,7 +182,7 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
     digitalWrite(DIR_Y, LOW);
     //Find the difference between current position and desired position in mm.
     //Multiply by ticks per mm.
-    double rotations = (y - position_y) * 175000.0;
+    double rotations = (y - position_y) * TICKS_PER_METER_Y;
     //debug_msg.data = rotations;
     //debug.publish(&debug_msg);
     
@@ -201,14 +203,14 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
             digitalWrite(STEP_Y, HIGH);
             delay(1);
           }
-          position_y = position_y + i / 175000.0;
+          position_y = position_y + i / TICKS_PER_METER_Y;
           break;
       }
     }
   } else{//If position requested is < current position
     //Set direction to 5 volts wrt board
     digitalWrite(DIR_Y, HIGH);
-    double rotations = (position_y - y) * 175000.0;
+    double rotations = (position_y - y) * TICKS_PER_METER_Y;
     //debug_msg.data = rotations;
     //debug.publish(&debug_msg);
     //Rotate (up and then down output making a square wave) that many times.
@@ -228,7 +230,7 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
             digitalWrite(STEP_Y, HIGH);
             delay(1);
           }
-          position_y = position_y - i / 175000.0;
+          position_y = position_y - i / TICKS_PER_METER_Y;
           break;
       }
     }
@@ -239,7 +241,7 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
     digitalWrite(DIR_Z, LOW);
     //Find the difference between current position and desired position in mm.
     //Multiply by ticks per mm.
-    double rotations = (z - position_z) * 175000.0;
+    double rotations = (z - position_z) * TICKS_PER_METER_Z;
     //debug_msg.data = rotations;
     //debug.publish(&debug_msg);
     
@@ -260,14 +262,14 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
             digitalWrite(STEP_Z, HIGH);
             delay(1);
           }
-          position_z = position_z + i / 175000.0;
+          position_z = position_z + i / TICKS_PER_METER_Z;
           break;
       }
     }
   } else{//If position requested is < current position
     //Set direction to 5 volts wrt board
     digitalWrite(DIR_Z, HIGH);
-    double rotations = (position_z - z) * 175000.0;
+    double rotations = (position_z - z) * TICKS_PER_METER_Z;
     //debug_msg.data = rotations;
     //debug.publish(&debug_msg);
     //Rotate (up and then down output making a square wave) that many times.
@@ -287,7 +289,7 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
             digitalWrite(STEP_Z, HIGH);
             delay(1);
           }
-          position_z = position_z - i / 175000.0;
+          position_z = position_z - i / TICKS_PER_METER_Z;
           break;
       }
     }
