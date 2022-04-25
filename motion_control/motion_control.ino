@@ -1,6 +1,24 @@
 #include <ros.h>
 #include <turtlesim/Spawn.h>
+#include <std_srvs/Trigger.h>
 #include <std_msgs/Float32.h>
+
+#define DIR_X 52
+#define DIR_Y 48
+#define DIR_Z 44
+
+#define STEP_X 40
+#define STEP_Y 36
+#define STEP_Z 32
+
+#define BOTTOM_X 28
+#define BOTTOM_Y 24
+#define BOTTOM_Z 23
+
+#define TOP_X 12
+#define TOP_Y 10
+#define TOP_Z 8
+
 
 //175 ticks per mm
 
@@ -9,11 +27,76 @@ double position_x;
 double position_y;
 double position_z;
 
+void reset(){
+  if(digitalRead(TOP_X)){
+    digitalWrite(DIR_X, HIGH);
+    while(digitalRead(TOP_X)){
+      digitalWrite(STEP_X, LOW);
+      delay(1);
+      digitalWrite(STEP_X, HIGH);
+      delay(1);
+    }
+  } else{
+    digitalWrite(DIR_X, LOW);
+    while(!digitalRead(TOP_X)){
+      digitalWrite(STEP_X, LOW);
+      delay(1);
+      digitalWrite(STEP_X, HIGH);
+      delay(1);
+    }
+  }
+
+  if(digitalRead(TOP_Y)){
+    digitalWrite(DIR_Y, HIGH);
+    while(digitalRead(TOP_Y)){
+      digitalWrite(STEP_Y, LOW);
+      delay(1);
+      digitalWrite(STEP_Y, HIGH);
+      delay(1);
+    }
+  } else{
+    digitalWrite(DIR_Y, LOW);
+    while(!digitalRead(TOP_Y)){
+      digitalWrite(STEP_Y, LOW);
+      delay(1);
+      digitalWrite(STEP_Y, HIGH);
+      delay(1);
+    }
+  }
+
+  if(digitalRead(TOP_Z)){
+    digitalWrite(DIR_Z, HIGH);
+    while(digitalRead(TOP_Z)){
+      digitalWrite(STEP_Z, LOW);
+      delay(1);
+      digitalWrite(STEP_Z, HIGH);
+      delay(1);
+    }
+  } else{
+    digitalWrite(DIR_Z, LOW);
+    while(!digitalRead(TOP_Z)){
+      digitalWrite(STEP_Z, LOW);
+      delay(1);
+      digitalWrite(STEP_Z, HIGH);
+      delay(1);
+    }
+  }
+  
+  //Establish this as 0 displacement
+  position_x = 0.0;
+  position_y = 0.0;
+  position_z = 0.0;
+}
+
 
 std_msgs::Float32 debug_msg;
 ros::Publisher debug("debug", &debug_msg);
 
-void messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResponse& res){
+void reset_messageCb( const std_srvs::TriggerRequest& req, std_srvs::TriggerResponse& res){
+  reset();
+}
+
+void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResponse& res){
     //debug_msg.data=position_msg.data;
     //debug.publish(&debug_msg);
     //nh.spinOnce();
@@ -22,43 +105,67 @@ void messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResponse& re
     double z = req.theta;
 
     if(x > position_x){//If position requested is > current position
-    digitalWrite(13, HIGH - digitalRead(13));
+    //digitalWrite(13, HIGH - digitalRead(13));
     //Set direction to 0 volts wrt board
-    digitalWrite(22, LOW);
+    digitalWrite(DIR_X, LOW);
     //Find the difference between current position and desired position in mm.
     //Multiply by ticks per mm.
     double rotations = (x - position_x) * 175000.0;
-    debug_msg.data = rotations;
-    debug.publish(&debug_msg);
+    //debug_msg.data = rotations;
+    //debug.publish(&debug_msg);
     
     //Rotate (up and then down output making a square wave) that many times.
     for(double i = 0.0; i < rotations; i = i + 1.0){
-      digitalWrite(27, LOW);
+      digitalWrite(STEP_X, LOW);
       delay(1);
-      digitalWrite(27, HIGH);
+      digitalWrite(STEP_X, HIGH);
       delay(1);
-    debug.publish(&debug_msg);
+
+      if(!(digitalRead(TOP_X) && digitalRead(BOTTOM_X))){
+          digitalWrite(DIR_X, HIGH);
+          while(!(digitalRead(TOP_X) && digitalRead(BOTTOM_X))){
+            digitalWrite(STEP_X, LOW);
+            delay(1);
+            digitalWrite(STEP_X, HIGH);
+            delay(1);
+          }
+          break;
+          position_x = position_x + i / 175000.0;
+      }
+      //debug.publish(&debug_msg);
     }
   } else{//If position requested is < current position
     //Set direction to 5 volts wrt board
-    digitalWrite(22, HIGH);
-    double rotations = (position_x - x) * 175000.0;
+    digitalWrite(DIR_X, HIGH);
+    double rotations = (position_x - x) / 175000.0;
     //debug_msg.data = rotations;
     //debug.publish(&debug_msg);
     //Rotate (up and then down output making a square wave) that many times.
     for(double i = 0.0; i < rotations; i = i + 1.0){
-      digitalWrite(27, LOW);
+      digitalWrite(STEP_X, LOW);
       delay(1);
-      digitalWrite(27, HIGH);
+      digitalWrite(STEP_X, HIGH);
       delay(1);
+
+      if(!(digitalRead(TOP_X) && digitalRead(BOTTOM_X))){
+          digitalWrite(DIR_X, LOW);
+          while(!(digitalRead(TOP_X) && digitalRead(BOTTOM_X))){
+            digitalWrite(STEP_X, LOW);
+            delay(1);
+            digitalWrite(STEP_X, HIGH);
+            delay(1);
+          }
+          position_x = position_x - i / 175000.0;
+          break;
+      }
     }
   }
 
     
   if(y > position_y){//If position requested is > current position
-    digitalWrite(13, HIGH - digitalRead(13));
+    //digitalWrite(13, HIGH - digitalRead(13));
     //Set direction to 0 volts wrt board
-    digitalWrite(10, LOW);
+    digitalWrite(DIR_Y, LOW);
     //Find the difference between current position and desired position in mm.
     //Multiply by ticks per mm.
     double rotations = (y - position_y) * 175000.0;
@@ -67,62 +174,110 @@ void messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResponse& re
     
     //Rotate (up and then down output making a square wave) that many times.
     for(double i = 0.0; i < rotations; i = i + 1.0){
-      digitalWrite(8, LOW);
-      digitalWrite(13, LOW);
+      digitalWrite(STEP_Y, LOW);
+      //digitalWrite(13, LOW);
       delay(1);
-      digitalWrite(8, HIGH);
-      digitalWrite(13, HIGH);
+      digitalWrite(STEP_Y, HIGH);
+      //digitalWrite(13, HIGH);
       delay(1);
+
+      if(!(digitalRead(TOP_Y) && digitalRead(BOTTOM_Y))){
+          digitalWrite(DIR_Y, HIGH);
+          while(!(digitalRead(TOP_Y) && digitalRead(BOTTOM_Y))){
+            digitalWrite(STEP_Y, LOW);
+            delay(1);
+            digitalWrite(STEP_Y, HIGH);
+            delay(1);
+          }
+          position_y = position_y + i / 175000.0;
+          break;
+      }
     }
   } else{//If position requested is < current position
     //Set direction to 5 volts wrt board
-    digitalWrite(10, HIGH);
+    digitalWrite(DIR_Y, HIGH);
     double rotations = (position_y - y) * 175000.0;
     //debug_msg.data = rotations;
     //debug.publish(&debug_msg);
     //Rotate (up and then down output making a square wave) that many times.
     for(double i = 0.0; i < rotations; i = i + 1.0){
-      digitalWrite(8, LOW);
-      digitalWrite(13, LOW);
+      digitalWrite(STEP_Y, LOW);
+      //digitalWrite(13, LOW);
       delay(1);
-      digitalWrite(8, HIGH);
-      digitalWrite(13, HIGH);
+      digitalWrite(STEP_Y, HIGH);
+      //digitalWrite(13, HIGH);
       delay(1);
+
+      if(!(digitalRead(TOP_Y) && digitalRead(BOTTOM_Y))){
+          digitalWrite(DIR_Y, LOW);
+          while(!(digitalRead(TOP_X) && digitalRead(BOTTOM_Y))){
+            digitalWrite(STEP_Y, LOW);
+            delay(1);
+            digitalWrite(STEP_Y, HIGH);
+            delay(1);
+          }
+          position_y = position_y - i / 175000.0;
+          break;
+      }
     }
   }
 
     if(z > position_z){//If position requested is > current position
     //Set direction to 0 volts wrt board
-    digitalWrite(7, LOW);
+    digitalWrite(DIR_Z, LOW);
     //Find the difference between current position and desired position in mm.
     //Multiply by ticks per mm.
     double rotations = (z - position_z) * 175000.0;
-    debug_msg.data = rotations;
-    debug.publish(&debug_msg);
+    //debug_msg.data = rotations;
+    //debug.publish(&debug_msg);
     
     //Rotate (up and then down output making a square wave) that many times.
     for(double i = 0.0; i < rotations; i = i + 1.0){
-      digitalWrite(5, LOW);
+      digitalWrite(STEP_Z, LOW);
       delay(1);
-      digitalWrite(5, HIGH);
+      digitalWrite(STEP_Z, HIGH);
       delay(1);
-      debug_msg.data = i;
-      debug.publish(&debug_msg);
+      //debug_msg.data = i;
+      //debug.publish(&debug_msg);
+
+      if(!(digitalRead(TOP_Z) && digitalRead(BOTTOM_Z))){
+          digitalWrite(DIR_Z, HIGH);
+          while(!(digitalRead(TOP_Z) && digitalRead(BOTTOM_Z))){
+            digitalWrite(STEP_Z, LOW);
+            delay(1);
+            digitalWrite(STEP_Z, HIGH);
+            delay(1);
+          }
+          position_z = position_z + i / 175000.0;
+          break;
+      }
     }
   } else{//If position requested is < current position
     //Set direction to 5 volts wrt board
-    digitalWrite(7, HIGH);
+    digitalWrite(DIR_Z, HIGH);
     double rotations = (position_z - z) * 175000.0;
-    debug_msg.data = rotations;
-    debug.publish(&debug_msg);
+    //debug_msg.data = rotations;
+    //debug.publish(&debug_msg);
     //Rotate (up and then down output making a square wave) that many times.
     for(double i = 0.0; i < rotations; i = i + 1.0){
-      digitalWrite(5, LOW);
+      digitalWrite(STEP_Z, LOW);
       delay(1);
-      digitalWrite(5, HIGH);
+      digitalWrite(STEP_Z, HIGH);
       delay(1);
-      debug_msg.data = i;
-      debug.publish(&debug_msg);
+      //debug_msg.data = i;
+      //debug.publish(&debug_msg);
+
+      if(!(digitalRead(TOP_Z) && digitalRead(BOTTOM_Z))){
+          digitalWrite(DIR_Z, LOW);
+          while(!(digitalRead(TOP_Z) && digitalRead(BOTTOM_Z))){
+            digitalWrite(STEP_Z, LOW);
+            delay(1);
+            digitalWrite(STEP_Z, HIGH);
+            delay(1);
+          }
+          position_z = position_z - i / 175000.0;
+          break;
+      }
     }
   }
 
@@ -135,36 +290,42 @@ void messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResponse& re
 }
 
 
-ros::ServiceServer<turtlesim::SpawnRequest, turtlesim::SpawnResponse> sub("motion_command", &messageCb );
+ros::ServiceServer<turtlesim::SpawnRequest, turtlesim::SpawnResponse> move_sub("motion_command", &positon_messageCb );
+ros::ServiceServer<std_srvs::TriggerRequest, std_srvs::TriggerResponse> reset_sub("reset", &reset_messageCb );
 
 void setup()
 {
-  //---Manually make sure that the motor is at full extension at the start (maximum amount of screw rod visible).---
+  //Set up the control pins as outputs.
+  pinMode(DIR_X, OUTPUT);
+  pinMode(DIR_Y, OUTPUT);
+  pinMode(DIR_Z, OUTPUT);
+  pinMode(STEP_X, OUTPUT);
+  pinMode(STEP_Y, OUTPUT);
+  pinMode(STEP_Z, OUTPUT);
+  //Set up the encoder listen pins as inputs.
+  pinMode(TOP_X, INPUT);
+  pinMode(TOP_Y, INPUT);
+  pinMode(TOP_Z, INPUT);
+  pinMode(BOTTOM_X, INPUT);
+  pinMode(BOTTOM_Y, INPUT);
+  pinMode(BOTTOM_Z, INPUT);
+
+  //Set direction to 0 volts wrt board
+  digitalWrite(DIR_X, LOW);
+  digitalWrite(DIR_Y, LOW);
+  digitalWrite(DIR_Z, LOW);
   
-  //Set up the three control pins as outputs.
-  pinMode(8, OUTPUT);
-  pinMode(10, OUTPUT);
-  pinMode(22, OUTPUT);
-  pinMode(27, OUTPUT);
-  pinMode(7, OUTPUT);
-  pinMode(5, OUTPUT);
   //Setup ROS node
   nh.initNode();
-  nh.advertiseService(sub);
-  nh.advertise(debug);
+
+  reset();
+  
+  nh.advertiseService(move_sub);
+  nh.advertiseService(reset_sub);
+  //nh.advertise(debug);
   //debug_msg.data = 66;
   //debug.publish(&debug_msg);
   nh.spinOnce();
-  
-  //Set direction to 0 volts wrt board
-  digitalWrite(10, LOW);
-  digitalWrite(22, LOW);
-  digitalWrite(7, LOW);
-  //Assume we are at 0 displacement.
-  position_x = 0.0;
-  position_y = 0.0;
-  position_z = 0.0;
-
 }
 
 void loop()
