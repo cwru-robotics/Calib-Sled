@@ -21,7 +21,7 @@
 
 #define TICKS_PER_METER_X 204200.0
 #define TICKS_PER_METER_Y 204200.0
-#define TICKS_PER_METER_Z 164000.0
+#define TICKS_PER_METER_Z 773190.0
 
 int debounceRead(int CODE){
   int one = digitalRead(CODE);
@@ -135,17 +135,17 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
       digitalWrite(STEP_X, HIGH);
       delay(1);
 
-      if(!(debounceRead(TOP_X) && debounceRead(BOTTOM_X))){
-          digitalWrite(DIR_X, HIGH);
-          while(!(debounceRead(TOP_X) && debounceRead(BOTTOM_X))){
-            digitalWrite(STEP_X, LOW);
-            delay(1);
-            digitalWrite(STEP_X, HIGH);
-            delay(1);
-          }
-          break;
-          position_x = position_x + i / TICKS_PER_METER_X;
-      }
+//      if(!(debounceRead(TOP_X) && debounceRead(BOTTOM_X))){
+//          digitalWrite(DIR_X, HIGH);
+//          while(!(debounceRead(TOP_X) && debounceRead(BOTTOM_X))){
+//            digitalWrite(STEP_X, LOW);
+//            delay(1);
+//            digitalWrite(STEP_X, HIGH);
+//            delay(1);
+//          }
+//          break;
+//          position_x = position_x + i / TICKS_PER_METER_X;
+//      }
       //debug.publish(&debug_msg);
     }
   } else{//If position requested is < current position
@@ -161,17 +161,17 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
       digitalWrite(STEP_X, HIGH);
       delay(1);
 
-      if(!(debounceRead(TOP_X) && debounceRead(BOTTOM_X))){
-          digitalWrite(DIR_X, LOW);
-          while(!(debounceRead(TOP_X) && debounceRead(BOTTOM_X))){
-            digitalWrite(STEP_X, LOW);
-            delay(1);
-            digitalWrite(STEP_X, HIGH);
-            delay(1);
-          }
-          position_x = position_x - i / TICKS_PER_METER_X;
-          break;
-      }
+//      if(!(debounceRead(TOP_X) && debounceRead(BOTTOM_X))){
+//          digitalWrite(DIR_X, LOW);
+//          while(!(debounceRead(TOP_X) && debounceRead(BOTTOM_X))){
+//            digitalWrite(STEP_X, LOW);
+//            delay(1);
+//            digitalWrite(STEP_X, HIGH);
+//            delay(1);
+//          }
+//          position_x = position_x - i / TICKS_PER_METER_X;
+//          break;
+//      }
     }
   }
 
@@ -195,17 +195,17 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
       //digitalWrite(13, HIGH);
       delay(1);
 
-      if(!(debounceRead(TOP_Y) && debounceRead(BOTTOM_Y))){
-          digitalWrite(DIR_Y, HIGH);
-          while(!(debounceRead(TOP_Y) && debounceRead(BOTTOM_Y))){
-            digitalWrite(STEP_Y, LOW);
-            delay(1);
-            digitalWrite(STEP_Y, HIGH);
-            delay(1);
-          }
-          position_y = position_y + i / TICKS_PER_METER_Y;
-          break;
-      }
+//      if(!(debounceRead(TOP_Y) && debounceRead(BOTTOM_Y))){
+//          digitalWrite(DIR_Y, HIGH);
+//          while(!(debounceRead(TOP_Y) && debounceRead(BOTTOM_Y))){
+//            digitalWrite(STEP_Y, LOW);
+//            delay(1);
+//            digitalWrite(STEP_Y, HIGH);
+//            delay(1);
+//          }
+//          position_y = position_y + i / TICKS_PER_METER_Y;
+//          break;
+//      }
     }
   } else{//If position requested is < current position
     //Set direction to 5 volts wrt board
@@ -222,17 +222,17 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
       //digitalWrite(13, HIGH);
       delay(1);
 
-      if(!(debounceRead(TOP_Y) && debounceRead(BOTTOM_Y))){
-          digitalWrite(DIR_Y, LOW);
-          while(!(debounceRead(TOP_X) && debounceRead(BOTTOM_Y))){
-            digitalWrite(STEP_Y, LOW);
-            delay(1);
-            digitalWrite(STEP_Y, HIGH);
-            delay(1);
-          }
-          position_y = position_y - i / TICKS_PER_METER_Y;
-          break;
-      }
+//      if(!(debounceRead(TOP_Y) && debounceRead(BOTTOM_Y))){
+//          digitalWrite(DIR_Y, LOW);
+//          while(!(debounceRead(TOP_X) && debounceRead(BOTTOM_Y))){
+//            digitalWrite(STEP_Y, LOW);
+//            delay(1);
+//            digitalWrite(STEP_Y, HIGH);
+//            delay(1);
+//          }
+//          position_y = position_y - i / TICKS_PER_METER_Y;
+//          break;
+//      }
     }
   }
 
@@ -254,17 +254,17 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
       //debug_msg.data = i;
       //debug.publish(&debug_msg);
 
-      if(!(debounceRead(TOP_Z) && debounceRead(BOTTOM_Z))){
-          digitalWrite(DIR_Z, HIGH);
-          while(!(debounceRead(TOP_Z) && debounceRead(BOTTOM_Z))){
-            digitalWrite(STEP_Z, LOW);
-            delay(1);
-            digitalWrite(STEP_Z, HIGH);
-            delay(1);
-          }
-          position_z = position_z + i / TICKS_PER_METER_Z;
-          break;
-      }
+//      if(!(debounceRead(TOP_Z) && debounceRead(BOTTOM_Z))){
+//          digitalWrite(DIR_Z, HIGH);
+//          while(!(debounceRead(TOP_Z) && debounceRead(BOTTOM_Z))){
+//            digitalWrite(STEP_Z, LOW);
+//            delay(1);
+//            digitalWrite(STEP_Z, HIGH);
+//            delay(1);
+//          }
+//          position_z = position_z + i / TICKS_PER_METER_Z;
+//          break;
+//      }
     }
   } else{//If position requested is < current position
     //Set direction to 5 volts wrt board
@@ -281,17 +281,17 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
       //debug_msg.data = i;
       //debug.publish(&debug_msg);
 
-      if(!(debounceRead(TOP_Z) && debounceRead(BOTTOM_Z))){
-          digitalWrite(DIR_Z, LOW);
-          while(!(debounceRead(TOP_Z) && debounceRead(BOTTOM_Z))){
-            digitalWrite(STEP_Z, LOW);
-            delay(1);
-            digitalWrite(STEP_Z, HIGH);
-            delay(1);
-          }
-          position_z = position_z - i / TICKS_PER_METER_Z;
-          break;
-      }
+//      if(!(debounceRead(TOP_Z) && debounceRead(BOTTOM_Z))){
+//          digitalWrite(DIR_Z, LOW);
+//          while(!(debounceRead(TOP_Z) && debounceRead(BOTTOM_Z))){
+//            digitalWrite(STEP_Z, LOW);
+//            delay(1);
+//            digitalWrite(STEP_Z, HIGH);
+//            delay(1);
+//          }
+//          position_z = position_z - i / TICKS_PER_METER_Z;
+//          break;
+//      }
     }
   }
 

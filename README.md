@@ -1,6 +1,11 @@
 # Calib-Sled
 Arduino-controlled calibration sled for endoscopes (and potentially other things).
 
+--IMPORTANT NOTE--
+
+If you are using ROS Melodic (or later??) you will need to download and open https://github.com/ros-drivers/rosserial/archive/refs/tags/0.7.7.zip, and manually move `rosserial_python/src/rosserial_python/SerialClient.py` to `/opt/ros/melodic/lib/python2.7/dist-packages/rosserial_arduino`. This will require sudo permissions.
+This is a fix for arduino-based services exiting as soon as they are called: https://github.com/ros-drivers/rosserial/issues/408
+
 #Setup From Cold Start
 * Turn on both power supplies. The switch on the top power supply should always be set to "on".
 * Turn on the da Vinci camera system, with the switch labeled "camera power" in the translucent box on the instrument cart (underneath the CRT TV).
