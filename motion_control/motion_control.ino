@@ -50,14 +50,14 @@ void reset(){
       digitalWrite(STEP_X, HIGH);
       delay(1);
     }
-  } else{
+  }// else{
     digitalWrite(DIR_X, LOW);
     while(!debounceRead(TOP_X)){
       digitalWrite(STEP_X, LOW);
       delay(1);
       digitalWrite(STEP_X, HIGH);
       delay(1);
-    }
+    //}
   }
 
   if(debounceRead(TOP_Y)){
@@ -68,7 +68,7 @@ void reset(){
       digitalWrite(STEP_Y, HIGH);
       delay(1);
     }
-  } else{
+  }// else{
     digitalWrite(DIR_Y, LOW);
     while(!debounceRead(TOP_Y)){
       digitalWrite(STEP_Y, LOW);
@@ -76,7 +76,7 @@ void reset(){
       digitalWrite(STEP_Y, HIGH);
       delay(1);
     }
-  }
+  //}
 
   if(debounceRead(TOP_Z)){
     digitalWrite(DIR_Z, HIGH);
@@ -86,7 +86,7 @@ void reset(){
       digitalWrite(STEP_Z, HIGH);
       delay(1);
     }
-  } else{
+  } //else{
     digitalWrite(DIR_Z, LOW);
     while(!debounceRead(TOP_Z)){
       digitalWrite(STEP_Z, LOW);
@@ -94,7 +94,7 @@ void reset(){
       digitalWrite(STEP_Z, HIGH);
       delay(1);
     }
-  }
+  //}
   
   //Establish this as 0 displacement
   position_x = 0.0;
