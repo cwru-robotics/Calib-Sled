@@ -306,7 +306,7 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
   position_y = y;
   position_z = z;
 
-  res.name = "complete";
+  res.name = "";
 }
 
 
