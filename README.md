@@ -31,6 +31,6 @@ To reset the sled to the zero position, run `rosservice call /reset`.
 # Running the calibrator
 
 Make sure the sleds are at their 0 positions (all the way up, to the left, and with the endoscope all the way forward, using the /reset command).
-Then, run `roslaunch intrinsic_acquisition intrinsic_acquisition.launch path:=/home/tes77/Desktop/Calib-Sled/task_description.yml topic:=/davinci_endo/left/image_raw`. This will run the calibration.
+Then, run `roslaunch intrinsic_acquisition intrinsic_acquisition.launch path:=/home/tes77/ros_ws/src/Calib-Sled/task_description.yml topic:=/davinci_endo/left/image_raw`. This will run the calibration.
 
 Call /reset after calibration to re-zero the sleds.

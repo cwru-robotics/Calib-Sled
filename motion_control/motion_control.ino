@@ -134,6 +134,7 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
       delay(1);
       digitalWrite(STEP_X, HIGH);
       delay(1);
+      nh.spinOnce();
 
 //      if(!(debounceRead(TOP_X) && debounceRead(BOTTOM_X))){
 //          digitalWrite(DIR_X, HIGH);
@@ -160,6 +161,7 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
       delay(1);
       digitalWrite(STEP_X, HIGH);
       delay(1);
+      nh.spinOnce();
 
 //      if(!(debounceRead(TOP_X) && debounceRead(BOTTOM_X))){
 //          digitalWrite(DIR_X, LOW);
@@ -194,6 +196,7 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
       digitalWrite(STEP_Y, HIGH);
       //digitalWrite(13, HIGH);
       delay(1);
+      nh.spinOnce();
 
 //      if(!(debounceRead(TOP_Y) && debounceRead(BOTTOM_Y))){
 //          digitalWrite(DIR_Y, HIGH);
@@ -221,6 +224,7 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
       digitalWrite(STEP_Y, HIGH);
       //digitalWrite(13, HIGH);
       delay(1);
+      nh.spinOnce();
 
 //      if(!(debounceRead(TOP_Y) && debounceRead(BOTTOM_Y))){
 //          digitalWrite(DIR_Y, LOW);
@@ -251,6 +255,7 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
       delay(1);
       digitalWrite(STEP_Z, HIGH);
       delay(1);
+      nh.spinOnce();
       //debug_msg.data = i;
       //debug.publish(&debug_msg);
 
@@ -278,6 +283,7 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
       delay(1);
       digitalWrite(STEP_Z, HIGH);
       delay(1);
+      nh.spinOnce();
       //debug_msg.data = i;
       //debug.publish(&debug_msg);
 
@@ -300,7 +306,7 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
   position_y = y;
   position_z = z;
 
-  res.name = "";
+  res.name = "complete";
 }
 
 
