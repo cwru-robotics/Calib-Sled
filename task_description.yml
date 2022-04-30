@@ -1,11 +1,11 @@
-inc_sled_x: 0.005
+inc_sled_x: 0.01
 min_sled_z: 0.0
 res_y: 640
-inc_sled_y: 0.005
+inc_sled_y: 0.01
 target_y: 9
 min_sled_x: 0.015
 max_sled_x: 0.065
-inc_sled_z: 0.005
+inc_sled_z: 0.01
 target_spacing: 0.01
 target_x: 6
 sled_y: x+
