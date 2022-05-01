@@ -2,7 +2,7 @@ inc_sled_y: 0.01
 max_sled_z: 0.1
 inc_sled_x: 0.01
 target_radius: 0.003
-target_x: 6
+target_x: 9
 res_x: 480
 mill_to_camera_guess_y: 0.0
 inc_sled_z: 0.01
@@ -13,7 +13,7 @@ sled_to_target_guess_p: 0.0
 min_sled_z: 0.0
 min_sled_y: 0.03
 max_sled_x: 0.065
-target_y: 9
+target_y: 8
 target_spacing: 0.01
 mill_to_camera_guess_x: 0.0
 sled_x: y+
