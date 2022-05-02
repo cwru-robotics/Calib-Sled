@@ -18,7 +18,7 @@ target_spacing: 0.01
 mill_to_camera_guess_x: 0.0
 sled_x: y+
 max_sled_y: 0.125
-sled_z: z-
+sled_z: z+
 mill_to_camera_guess_z: 0.12
 mill_to_camera_guess_r: 0.0
 mill_to_camera_guess_w: 0.0
