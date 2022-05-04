@@ -41,14 +41,14 @@ void reset(){
       digitalWrite(STEP_Z, HIGH);
       delay(1);
     }
-  } else{
+  }// else{
     digitalWrite(DIR_Z, LOW);
     while(!debounceRead(TOP_Z)){
       digitalWrite(STEP_Z, LOW);
       delay(1);
       digitalWrite(STEP_Z, HIGH);
       delay(1);
-    }
+    //}
   }
 }
 
@@ -83,6 +83,7 @@ void setup()
   
   nh.advertise(debug);
   debug_msg.data = 12345;
+  nh.spinOnce();
   debug.publish(&debug_msg);
   nh.spinOnce();
 
