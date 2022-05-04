@@ -19,8 +19,11 @@
 #define TOP_Y 10
 #define TOP_Z 8
 
-#define TICKS_PER_METER_X 204200.0
-#define TICKS_PER_METER_Y 204200.0
+//X movement range is 234mm - 387mm = 153mm
+//Y movement range is 169mm - 322mm = 153mm
+
+#define TICKS_PER_METER_X 198908.0
+#define TICKS_PER_METER_Y 198830.0
 #define TICKS_PER_METER_Z 773190.0
 
 int debounceRead(int CODE){
