@@ -17,6 +17,11 @@
 #define TOP_Y 10
 #define TOP_Z 8
 
+int DIR = DIR_Y;
+int STEP = STEP_Y;
+int TOP = TOP_Y;
+int BOTTOM = BOTTOM_Y;
+
 ros::NodeHandle nh;
 
 int debounceRead(int CODE){
@@ -33,20 +38,20 @@ int debounceRead(int CODE){
 }
 
 void reset(){
-  if(debounceRead(TOP_Z)){
-    digitalWrite(DIR_Z, HIGH);
-    while(debounceRead(TOP_Z)){
-      digitalWrite(STEP_Z, LOW);
+  if(debounceRead(TOP)){
+    digitalWrite(DIR, HIGH);
+    while(debounceRead(TOP)){
+      digitalWrite(STEP, LOW);
       delay(1);
-      digitalWrite(STEP_Z, HIGH);
+      digitalWrite(STEP, HIGH);
       delay(1);
     }
   }// else{
-    digitalWrite(DIR_Z, LOW);
-    while(!debounceRead(TOP_Z)){
-      digitalWrite(STEP_Z, LOW);
+    digitalWrite(DIR, LOW);
+    while(!debounceRead(TOP)){
+      digitalWrite(STEP, LOW);
       delay(1);
-      digitalWrite(STEP_Z, HIGH);
+      digitalWrite(STEP, HIGH);
       delay(1);
     //}
   }
@@ -79,7 +84,7 @@ void setup()
   reset();
 
   //Set direction to 0 volts wrt board
-  digitalWrite(DIR_Z, LOW);
+  digitalWrite(DIR, LOW);
   
   nh.advertise(debug);
   debug_msg.data = 12345;
@@ -88,10 +93,10 @@ void setup()
   nh.spinOnce();
 
   int c = 0;
-  while(debounceRead(BOTTOM_Z)){
-    digitalWrite(STEP_Z, LOW);
+  while(debounceRead(BOTTOM)){
+    digitalWrite(STEP, LOW);
     delay(1);
-    digitalWrite(STEP_Z, HIGH);
+    digitalWrite(STEP, HIGH);
     delay(1);
     c++;
   }
