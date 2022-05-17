@@ -11,20 +11,21 @@
 #define STEP_Y 36
 #define STEP_Z 32
 
-#define BOTTOM_X 28
-#define BOTTOM_Y 24
-#define BOTTOM_Z 23
+#define BOTTOM_X 11
+#define BOTTOM_Y 7
+#define BOTTOM_Z 2
 
 #define TOP_X 12
-#define TOP_Y 10
-#define TOP_Z 8
+#define TOP_Y 8
+#define TOP_Z 3
 
 //X movement range is 234mm - 387mm = 153mm
 //Y movement range is 169mm - 322mm = 153mm
+//Z movement range is 200mm - 304mm = 104mm
 
-#define TICKS_PER_METER_X 198908.0
-#define TICKS_PER_METER_Y 198830.0
-#define TICKS_PER_METER_Z 773190.0
+#define TICKS_PER_METER_X 397620
+#define TICKS_PER_METER_Y 397598
+#define TICKS_PER_METER_Z 1569273
 
 int debounceRead(int CODE){
   int one = digitalRead(CODE);
@@ -45,59 +46,62 @@ double position_y;
 double position_z;
 
 void reset(){
-  if(debounceRead(TOP_X)){
+  int current_value = LOW;
+  if(digitalRead(TOP_X)){
     digitalWrite(DIR_X, HIGH);
-    while(debounceRead(TOP_X)){
-      digitalWrite(STEP_X, LOW);
-      delay(1);
-      digitalWrite(STEP_X, HIGH);
-      delay(1);
+    while(digitalRead(TOP_X)){
+      current_value = HIGH - current_value;
+      digitalWrite(STEP_X, current_value);
+      delayMicroseconds(400);
     }
   }// else{
+    delay(1000);
     digitalWrite(DIR_X, LOW);
-    while(!debounceRead(TOP_X)){
-      digitalWrite(STEP_X, LOW);
-      delay(1);
-      digitalWrite(STEP_X, HIGH);
-      delay(1);
+    delay(1000);
+    while(!digitalRead(TOP_X)){
+      current_value = HIGH - current_value;
+      digitalWrite(STEP_X, current_value);
+      delayMicroseconds(400);
     //}
   }
 
-  if(debounceRead(TOP_Y)){
+  if(digitalRead(TOP_Y)){
     digitalWrite(DIR_Y, HIGH);
-    while(debounceRead(TOP_Y)){
-      digitalWrite(STEP_Y, LOW);
-      delay(1);
-      digitalWrite(STEP_Y, HIGH);
-      delay(1);
+    int current_value = LOW;
+    while(digitalRead(TOP_Y)){
+      current_value = HIGH - current_value;
+      digitalWrite(STEP_Y, current_value);
+      delayMicroseconds(400);
     }
   }// else{
+    delay(1000);
     digitalWrite(DIR_Y, LOW);
-    while(!debounceRead(TOP_Y)){
-      digitalWrite(STEP_Y, LOW);
-      delay(1);
-      digitalWrite(STEP_Y, HIGH);
-      delay(1);
-    }
-  //}
+    delay(1000);
+    while(!digitalRead(TOP_Y)){
+      current_value = HIGH - current_value;
+      digitalWrite(STEP_Y, current_value);
+      delayMicroseconds(400);
+    //}
+  }
 
-  if(debounceRead(TOP_Z)){
+  if(digitalRead(TOP_Z)){
+    int current_value = LOW;
     digitalWrite(DIR_Z, HIGH);
-    while(debounceRead(TOP_Z)){
-      digitalWrite(STEP_Z, LOW);
-      delay(1);
-      digitalWrite(STEP_Z, HIGH);
-      delay(1);
+    while(digitalRead(TOP_Z)){
+      current_value = HIGH - current_value;
+      digitalWrite(STEP_Z, current_value);
+      delayMicroseconds(400);
     }
-  } //else{
+  }// else{
+    delay(1000);
     digitalWrite(DIR_Z, LOW);
-    while(!debounceRead(TOP_Z)){
-      digitalWrite(STEP_Z, LOW);
-      delay(1);
-      digitalWrite(STEP_Z, HIGH);
-      delay(1);
-    }
-  //}
+    delay(1000);
+    while(!digitalRead(TOP_Z)){
+      current_value = HIGH - current_value;
+      digitalWrite(STEP_Z, current_value);
+      delayMicroseconds(400);
+    //}
+  }
   
   //Establish this as 0 displacement
   position_x = 0.0;
@@ -132,11 +136,11 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
     //debug.publish(&debug_msg);
     
     //Rotate (up and then down output making a square wave) that many times.
+    int current_value = LOW;
     for(double i = 0.0; i < rotations; i = i + 1.0){
-      digitalWrite(STEP_X, LOW);
-      delay(1);
-      digitalWrite(STEP_X, HIGH);
-      delay(1);
+      current_value = HIGH - current_value;
+      digitalWrite(STEP_X, current_value);
+      delayMicroseconds(400);
       nh.spinOnce();
 
 //      if(!(debounceRead(TOP_X) && debounceRead(BOTTOM_X))){
@@ -159,11 +163,11 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
     //debug_msg.data = rotations;
     //debug.publish(&debug_msg);
     //Rotate (up and then down output making a square wave) that many times.
+    int current_value = LOW;
     for(double i = 0.0; i < rotations; i = i + 1.0){
-      digitalWrite(STEP_X, LOW);
-      delay(1);
-      digitalWrite(STEP_X, HIGH);
-      delay(1);
+      current_value = HIGH - current_value;
+      digitalWrite(STEP_X, current_value);
+      delayMicroseconds(400);
       nh.spinOnce();
 
 //      if(!(debounceRead(TOP_X) && debounceRead(BOTTOM_X))){
@@ -192,13 +196,11 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
     //debug.publish(&debug_msg);
     
     //Rotate (up and then down output making a square wave) that many times.
+    int current_value = LOW;
     for(double i = 0.0; i < rotations; i = i + 1.0){
-      digitalWrite(STEP_Y, LOW);
-      //digitalWrite(13, LOW);
-      delay(1);
-      digitalWrite(STEP_Y, HIGH);
-      //digitalWrite(13, HIGH);
-      delay(1);
+      current_value = HIGH - current_value;
+      digitalWrite(STEP_Y, current_value);
+      delayMicroseconds(400);
       nh.spinOnce();
 
 //      if(!(debounceRead(TOP_Y) && debounceRead(BOTTOM_Y))){
@@ -220,13 +222,11 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
     //debug_msg.data = rotations;
     //debug.publish(&debug_msg);
     //Rotate (up and then down output making a square wave) that many times.
+    int current_value = LOW;
     for(double i = 0.0; i < rotations; i = i + 1.0){
-      digitalWrite(STEP_Y, LOW);
-      //digitalWrite(13, LOW);
-      delay(1);
-      digitalWrite(STEP_Y, HIGH);
-      //digitalWrite(13, HIGH);
-      delay(1);
+      current_value = HIGH - current_value;
+      digitalWrite(STEP_Y, current_value);
+      delayMicroseconds(400);
       nh.spinOnce();
 
 //      if(!(debounceRead(TOP_Y) && debounceRead(BOTTOM_Y))){
@@ -253,12 +253,11 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
     //debug.publish(&debug_msg);
     
     //Rotate (up and then down output making a square wave) that many times.
+    int current_value = LOW;
     for(double i = 0.0; i < rotations; i = i + 1.0){
-      digitalWrite(STEP_Z, LOW);
-      delay(1);
-      digitalWrite(STEP_Z, HIGH);
-      delay(1);
-      nh.spinOnce();
+      current_value = HIGH - current_value;
+      digitalWrite(STEP_Z, current_value);
+      delayMicroseconds(400);
       //debug_msg.data = i;
       //debug.publish(&debug_msg);
 
@@ -281,11 +280,11 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
     //debug_msg.data = rotations;
     //debug.publish(&debug_msg);
     //Rotate (up and then down output making a square wave) that many times.
+    int current_value = LOW;
     for(double i = 0.0; i < rotations; i = i + 1.0){
-      digitalWrite(STEP_Z, LOW);
-      delay(1);
-      digitalWrite(STEP_Z, HIGH);
-      delay(1);
+      current_value = HIGH - current_value;
+      digitalWrite(STEP_Z, current_value);
+      delayMicroseconds(400);
       nh.spinOnce();
       //debug_msg.data = i;
       //debug.publish(&debug_msg);

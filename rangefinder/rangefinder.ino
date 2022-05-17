@@ -1,5 +1,5 @@
 #include <ros.h>
-#include <std_msgs/Int32.h>
+#include <std_msgs/UInt32.h>
 
 #define DIR_X 52
 #define DIR_Y 48
@@ -9,18 +9,18 @@
 #define STEP_Y 36
 #define STEP_Z 32
 
-#define BOTTOM_X 28
-#define BOTTOM_Y 24
-#define BOTTOM_Z 23
+#define BOTTOM_X 11
+#define BOTTOM_Y 7
+#define BOTTOM_Z 2
 
 #define TOP_X 12
-#define TOP_Y 10
-#define TOP_Z 8
+#define TOP_Y 8
+#define TOP_Z 3
 
-int DIR = DIR_Y;
-int STEP = STEP_Y;
-int TOP = TOP_Y;
-int BOTTOM = BOTTOM_Y;
+int DIR = DIR_X;
+int STEP = STEP_X;
+int TOP = TOP_X;
+int BOTTOM = BOTTOM_X;
 
 ros::NodeHandle nh;
 
@@ -38,27 +38,28 @@ int debounceRead(int CODE){
 }
 
 void reset(){
-  if(debounceRead(TOP)){
+  int current_value = LOW;
+  if(digitalRead(TOP)){
     digitalWrite(DIR, HIGH);
-    while(debounceRead(TOP)){
-      digitalWrite(STEP, LOW);
-      delay(1);
-      digitalWrite(STEP, HIGH);
-      delay(1);
+    while(digitalRead(TOP)){
+      current_value = HIGH - current_value;
+      digitalWrite(STEP, current_value);
+      delayMicroseconds(400);
     }
   }// else{
+    delay(1000);
     digitalWrite(DIR, LOW);
-    while(!debounceRead(TOP)){
-      digitalWrite(STEP, LOW);
-      delay(1);
-      digitalWrite(STEP, HIGH);
-      delay(1);
+    delay(1000);
+    while(!digitalRead(TOP)){
+      current_value = HIGH - current_value;
+      digitalWrite(STEP, current_value);
+      delayMicroseconds(400);
     //}
   }
 }
 
 
-std_msgs::Int32 debug_msg;
+std_msgs::UInt32 debug_msg;
 ros::Publisher debug("debug", &debug_msg);
 
 void setup()
@@ -83,8 +84,11 @@ void setup()
 
   reset();
 
+  delay(1000);
+
   //Set direction to 0 volts wrt board
   digitalWrite(DIR, LOW);
+  delay(1000);
   
   nh.advertise(debug);
   debug_msg.data = 12345;
@@ -92,12 +96,12 @@ void setup()
   debug.publish(&debug_msg);
   nh.spinOnce();
 
-  int c = 0;
-  while(debounceRead(BOTTOM)){
-    digitalWrite(STEP, LOW);
-    delay(1);
-    digitalWrite(STEP, HIGH);
-    delay(1);
+  long unsigned int c = 0;
+  int current_value = LOW;
+  while(digitalRead(BOTTOM)){
+    current_value = HIGH - current_value;
+    digitalWrite(STEP, current_value);
+    delayMicroseconds(400);
     c++;
   }
 
