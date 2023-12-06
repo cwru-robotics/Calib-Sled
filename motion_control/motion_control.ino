@@ -50,6 +50,7 @@ void reset(){
   if(digitalRead(TOP_X)){
     digitalWrite(DIR_X, HIGH);
     while(digitalRead(TOP_X)){
+      nh.spinOnce();
       current_value = HIGH - current_value;
       digitalWrite(STEP_X, current_value);
       delayMicroseconds(400);
@@ -59,6 +60,7 @@ void reset(){
     digitalWrite(DIR_X, LOW);
     delay(1000);
     while(!digitalRead(TOP_X)){
+      nh.spinOnce();
       current_value = HIGH - current_value;
       digitalWrite(STEP_X, current_value);
       delayMicroseconds(400);
@@ -69,6 +71,7 @@ void reset(){
     digitalWrite(DIR_Y, HIGH);
     int current_value = LOW;
     while(digitalRead(TOP_Y)){
+      nh.spinOnce();
       current_value = HIGH - current_value;
       digitalWrite(STEP_Y, current_value);
       delayMicroseconds(400);
@@ -78,6 +81,7 @@ void reset(){
     digitalWrite(DIR_Y, LOW);
     delay(1000);
     while(!digitalRead(TOP_Y)){
+      nh.spinOnce();
       current_value = HIGH - current_value;
       digitalWrite(STEP_Y, current_value);
       delayMicroseconds(400);
@@ -88,6 +92,7 @@ void reset(){
     int current_value = LOW;
     digitalWrite(DIR_Z, HIGH);
     while(digitalRead(TOP_Z)){
+      nh.spinOnce();
       current_value = HIGH - current_value;
       digitalWrite(STEP_Z, current_value);
       delayMicroseconds(400);
@@ -97,6 +102,7 @@ void reset(){
     digitalWrite(DIR_Z, LOW);
     delay(1000);
     while(!digitalRead(TOP_Z)){
+      nh.spinOnce();
       current_value = HIGH - current_value;
       digitalWrite(STEP_Z, current_value);
       delayMicroseconds(400);
@@ -340,7 +346,7 @@ void setup()
   //Setup ROS node
   nh.initNode();
 
-  reset();
+  //reset();
   
   nh.advertiseService(move_sub);
   nh.advertiseService(reset_sub);
