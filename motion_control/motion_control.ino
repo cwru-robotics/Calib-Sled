@@ -1,3 +1,4 @@
+#define USE_USBCON
 #include <ros.h>
 #include <turtlesim/Spawn.h>
 #include <std_srvs/Trigger.h>
