@@ -51,63 +51,78 @@ void reset(){
   if(digitalRead(TOP_X)){
     digitalWrite(DIR_X, HIGH);
     while(digitalRead(TOP_X)){
-      nh.spinOnce();
-      current_value = HIGH - current_value;
-      digitalWrite(STEP_X, current_value);
-      delayMicroseconds(400);
+      while(digitalRead(TOP_X)){
+        nh.spinOnce();
+        current_value = HIGH - current_value;
+        digitalWrite(STEP_X, current_value);
+        delayMicroseconds(400);
+      }
+      delayMicroseconds(800);
     }
-  }// else{
-    delay(1000);
-    digitalWrite(DIR_X, LOW);
-    delay(1000);
+  }
+  delay(1000);
+  digitalWrite(DIR_X, LOW);
+  delay(1000);
+  while(!digitalRead(TOP_X)){
     while(!digitalRead(TOP_X)){
       nh.spinOnce();
       current_value = HIGH - current_value;
       digitalWrite(STEP_X, current_value);
       delayMicroseconds(400);
-    //}
+    }
+    delayMicroseconds(800);
   }
 
   if(digitalRead(TOP_Y)){
     digitalWrite(DIR_Y, HIGH);
     int current_value = LOW;
     while(digitalRead(TOP_Y)){
-      nh.spinOnce();
-      current_value = HIGH - current_value;
-      digitalWrite(STEP_Y, current_value);
-      delayMicroseconds(400);
+      while(digitalRead(TOP_Y)){
+        nh.spinOnce();
+        current_value = HIGH - current_value;
+        digitalWrite(STEP_Y, current_value);
+        delayMicroseconds(400);
+      }
+      delayMicroseconds(800);
     }
-  }// else{
-    delay(1000);
-    digitalWrite(DIR_Y, LOW);
-    delay(1000);
+  }
+  delay(1000);
+  digitalWrite(DIR_Y, LOW);
+  delay(1000);
+  while(!digitalRead(TOP_Y)){
     while(!digitalRead(TOP_Y)){
       nh.spinOnce();
       current_value = HIGH - current_value;
       digitalWrite(STEP_Y, current_value);
       delayMicroseconds(400);
-    //}
+    }
+    delayMicroseconds(800);
   }
 
   if(digitalRead(TOP_Z)){
     int current_value = LOW;
     digitalWrite(DIR_Z, HIGH);
     while(digitalRead(TOP_Z)){
-      nh.spinOnce();
-      current_value = HIGH - current_value;
-      digitalWrite(STEP_Z, current_value);
-      delayMicroseconds(400);
+      while(digitalRead(TOP_Z)){
+        nh.spinOnce();
+        current_value = HIGH - current_value;
+        digitalWrite(STEP_Z, current_value);
+        delayMicroseconds(400);
+      }
+      delayMicroseconds(800);
     }
-  }// else{
-    delay(1000);
-    digitalWrite(DIR_Z, LOW);
-    delay(1000);
+  }
+  delay(1000);
+  digitalWrite(DIR_Z, LOW);
+  delay(1000);
+  while(!digitalRead(TOP_Z)){
     while(!digitalRead(TOP_Z)){
       nh.spinOnce();
       current_value = HIGH - current_value;
       digitalWrite(STEP_Z, current_value);
       delayMicroseconds(400);
-    //}
+    }
+    delayMicroseconds(800);
   }
   
   //Establish this as 0 displacement
@@ -122,6 +137,7 @@ ros::Publisher debug("debug", &debug_msg);
 
 void reset_messageCb( const std_srvs::TriggerRequest& req, std_srvs::TriggerResponse& res){
   reset();
+  res.success = digitalRead(TOP_Z) && digitalRead(TOP_X) && digitalRead(TOP_Y);
 }
 
 void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResponse& res){
