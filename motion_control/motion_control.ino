@@ -24,6 +24,10 @@
 //Y movement range is 169mm - 322mm = 153mm
 //Z movement range is 200mm - 304mm = 104mm
 
+#define X_LIMIT 0.15
+#define Y_LIMIT 0.15
+#define Z_LIMIT 0.10
+
 #define TICKS_PER_METER_X 397620
 #define TICKS_PER_METER_Y 397598
 #define TICKS_PER_METER_Z 1569273
@@ -147,6 +151,11 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
     double x = req.x;
     double y = req.y;
     double z = req.theta;
+
+    if(x > X_LIMIT || y > Y_LIMIT || z > Z_LIMIT){
+       res.name = "OUT OF RANGE ERROR";
+       return;
+    }
 
     if(x > position_x){//If position requested is > current position
     //digitalWrite(13, HIGH - digitalRead(13));
