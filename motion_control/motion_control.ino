@@ -290,6 +290,7 @@ void positon_messageCb( const turtlesim::SpawnRequest& req, turtlesim::SpawnResp
       current_value = HIGH - current_value;
       digitalWrite(STEP_Z, current_value);
       delayMicroseconds(400);
+      nh.spinOnce();
       //debug_msg.data = i;
       //debug.publish(&debug_msg);
 
