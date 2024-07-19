@@ -34,3 +34,20 @@ Make sure the sleds are at their 0 positions (all the way up, to the left, and w
 Then, run `roslaunch intrinsic_acquisition intrinsic_acquisition.launch path:=/home/tes77/ros_ws/src/Calib-Sled/task_description.yml topic:=/davinci_endo/left/image_raw`. This will run the calibration.
 
 Call /reset after calibration to re-zero the sleds.
+
+
+## Orthogonality testing
+
+If for some reason you are worried about the orthogonality of the Z axis w.r.t. the X and Y axes, you can perform the following using a Polaris sensor:
+
+* Tape the Polaris marker somewhere on the XY sled.
+* ``rostopic echo /polaris_sensor/targets >> first_two.txt``
+* Move the sled from 0, 0, 0 to 0.15, 0.15, 0 (or anywhere, really).
+* Tape the Polaris marker on the endoscope Z sled.
+* ``rostopic echo /polaris_sensor/targets >> last.txt``
+* ``grep "x:\|y:\|z:\|w:\|orientation:" last.txt > last_proc.csv``
+* ``grep "x:\|y:\|z:\|w:\|orientation:" first_two.txt > first_two_proc.csv``
+* Using Gedit, replace ``\n orientation:\n x:`` with ``,``, ``\n y:``, ``\n z:``, ``\n w:``, with ``,``, and `` x: `` with nothing.
+* Run the Matlab script orthogonality_test.m
+
+This will return the angle, in radians, between the normal vector of the XY plane and the vector of Z motion. Ideally this should be pi, our value is around 3.1230, off by 0.5%.
