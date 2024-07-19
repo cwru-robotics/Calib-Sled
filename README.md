@@ -36,6 +36,24 @@ Then, run `roslaunch intrinsic_acquisition intrinsic_acquisition.launch path:=/h
 Call /reset after calibration to re-zero the sleds.
 
 
+## Calibrating the sled motion
+
+* You will need to modify lines 24 through 27 in rangefinder.ino to reflect the axis you want to calibrate (i.e. X, Y, or Z).
+* Upload rangefinder.ino
+* ``rosrun rosserial_arduino serial_node.py _port:=/dev/ttyACM0``
+* ``rosservice call /reset``
+* ``rosservice call /evaluate``. Hit Tab a couple of times to fill in the arguments.
+* This will spit out a tick count. It is normal for the tick count to vary by around 5 between tests, I usually run each axis 10 times and then average them.
+* Stick the Polaris marker somewhere on the sled.
+* ``rostopic echo /polaris_sensor/targets -n 1``. Write down the X, Y, and Z coordinates of the position. This is P1.
+* ``rosservice call /reset``
+* ``rostopic echo /polaris_sensor/targets -n 1``. Write down the X, Y, and Z coordinates of the position. This is P2.
+* mean(tick count) / norm(P1 - P2) is the ticks per meter. Write this in Lines 31 to 33 of motion_control.ino
+
+Should be accurate to about 0.2%.
+
+
+
 ## Orthogonality testing
 
 If for some reason you are worried about the orthogonality of the Z axis w.r.t. the X and Y axes, you can perform the following using a Polaris sensor:

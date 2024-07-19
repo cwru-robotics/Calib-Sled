@@ -1,4 +1,8 @@
+#define USE_USBCON
 #include <ros.h>
+#include <turtlesim/Spawn.h>
+#include <std_srvs/Trigger.h>
+#include <std_msgs/Float32.h>
 #include <std_msgs/UInt32.h>
 
 #define DIR_X 52
@@ -17,50 +21,138 @@
 #define TOP_Y 8
 #define TOP_Z 3
 
-int DIR = DIR_X;
-int STEP = STEP_X;
-int TOP = TOP_X;
-int BOTTOM = BOTTOM_X;
+int DIR = DIR_Z;
+int STEP = STEP_Z;
+int TOP = TOP_Z;
+int BOTTOM = BOTTOM_Z;
 
 ros::NodeHandle nh;
 
-int debounceRead(int CODE){
-  int one = digitalRead(CODE);
-  delay(1);
-  int two = digitalRead(CODE);
-  if(one == two){
-    return one;
-  }
-  else{
-    delay(1);
-    return debounceRead(CODE);
-  }
-}
-
 void reset(){
   int current_value = LOW;
-  if(digitalRead(TOP)){
-    digitalWrite(DIR, HIGH);
-    while(digitalRead(TOP)){
+  if(digitalRead(TOP_X)){
+    digitalWrite(DIR_X, HIGH);
+    while(digitalRead(TOP_X)){
+      while(digitalRead(TOP_X)){
+        nh.spinOnce();
+        current_value = HIGH - current_value;
+        digitalWrite(STEP_X, current_value);
+        delayMicroseconds(400);
+      }
+      delayMicroseconds(800);
+    }
+  }
+  delay(1000);
+  digitalWrite(DIR_X, LOW);
+  delay(1000);
+  while(!digitalRead(TOP_X)){
+    while(!digitalRead(TOP_X)){
+      nh.spinOnce();
       current_value = HIGH - current_value;
-      digitalWrite(STEP, current_value);
+      digitalWrite(STEP_X, current_value);
       delayMicroseconds(400);
     }
-  }// else{
-    delay(1000);
-    digitalWrite(DIR, LOW);
-    delay(1000);
-    while(!digitalRead(TOP)){
+    delayMicroseconds(800);
+  }
+
+  if(digitalRead(TOP_Y)){
+    digitalWrite(DIR_Y, HIGH);
+    int current_value = LOW;
+    while(digitalRead(TOP_Y)){
+      while(digitalRead(TOP_Y)){
+        nh.spinOnce();
+        current_value = HIGH - current_value;
+        digitalWrite(STEP_Y, current_value);
+        delayMicroseconds(400);
+      }
+      delayMicroseconds(800);
+    }
+  }
+  delay(1000);
+  digitalWrite(DIR_Y, LOW);
+  delay(1000);
+  while(!digitalRead(TOP_Y)){
+    while(!digitalRead(TOP_Y)){
+      nh.spinOnce();
       current_value = HIGH - current_value;
-      digitalWrite(STEP, current_value);
+      digitalWrite(STEP_Y, current_value);
       delayMicroseconds(400);
-    //}
+    }
+    delayMicroseconds(800);
+  }
+
+  if(digitalRead(TOP_Z)){
+    int current_value = LOW;
+    digitalWrite(DIR_Z, HIGH);
+    while(digitalRead(TOP_Z)){
+      while(digitalRead(TOP_Z)){
+        nh.spinOnce();
+        current_value = HIGH - current_value;
+        digitalWrite(STEP_Z, current_value);
+        delayMicroseconds(400);
+      }
+      delayMicroseconds(800);
+    }
+  }
+  delay(1000);
+  digitalWrite(DIR_Z, LOW);
+  delay(1000);
+  while(!digitalRead(TOP_Z)){
+    while(!digitalRead(TOP_Z)){
+      nh.spinOnce();
+      current_value = HIGH - current_value;
+      digitalWrite(STEP_Z, current_value);
+      delayMicroseconds(400);
+    }
+    delayMicroseconds(800);
   }
 }
 
 
 std_msgs::UInt32 debug_msg;
 ros::Publisher debug("debug", &debug_msg);
+
+void reset_messageCb( const std_srvs::TriggerRequest& req, std_srvs::TriggerResponse& res){
+  reset();
+  res.success = digitalRead(TOP_Z) && digitalRead(TOP_X) && digitalRead(TOP_Y);
+}
+
+void doYourThangCallback(const turtlesim::SpawnRequest& req, turtlesim::SpawnResponse& res){
+  reset();
+
+  delay(1000);
+
+  //Set direction to 0 volts wrt board
+  digitalWrite(DIR, LOW);
+  delay(1000);
+  
+  nh.advertise(debug);
+  debug_msg.data = 12345;
+  nh.spinOnce();
+  debug.publish(&debug_msg);
+  nh.spinOnce();
+
+  long unsigned int c = 0;
+  int current_value = LOW;
+  while(digitalRead(BOTTOM)){
+    while(digitalRead(BOTTOM)){
+      current_value = HIGH - current_value;
+      digitalWrite(STEP, current_value);
+      delayMicroseconds(600);
+      c++;
+      nh.spinOnce();
+    }
+    delayMicroseconds(800);
+  }
+
+  char buf[256];
+  itoa(c, buf, 10);
+  res.name = buf;
+  debug.publish(&debug_msg);
+}
+
+ros::ServiceServer<turtlesim::SpawnRequest, turtlesim::SpawnResponse> move_sub("evaluate", &doYourThangCallback );
+ros::ServiceServer<std_srvs::TriggerRequest, std_srvs::TriggerResponse> reset_sub("reset", &reset_messageCb );
 
 void setup()
 {
@@ -82,31 +174,9 @@ void setup()
   //Setup ROS node
   nh.initNode();
 
-  reset();
+  nh.advertiseService(move_sub);
+  nh.advertiseService(reset_sub);
 
-  delay(1000);
-
-  //Set direction to 0 volts wrt board
-  digitalWrite(DIR, LOW);
-  delay(1000);
-  
-  nh.advertise(debug);
-  debug_msg.data = 12345;
-  nh.spinOnce();
-  debug.publish(&debug_msg);
-  nh.spinOnce();
-
-  long unsigned int c = 0;
-  int current_value = LOW;
-  while(digitalRead(BOTTOM)){
-    current_value = HIGH - current_value;
-    digitalWrite(STEP, current_value);
-    delayMicroseconds(400);
-    c++;
-  }
-
-  debug_msg.data = c;
-  debug.publish(&debug_msg);
   nh.spinOnce();
 }
 
