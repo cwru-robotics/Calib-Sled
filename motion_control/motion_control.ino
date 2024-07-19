@@ -20,17 +20,17 @@
 #define TOP_Y 8
 #define TOP_Z 3
 
-//X movement range is 234mm - 387mm = 153mm
-//Y movement range is 169mm - 322mm = 153mm
-//Z movement range is 200mm - 304mm = 104mm
+//X movement range is 234mm - 387mm = 151.9mm
+//Y movement range is 169mm - 322mm = 151.9mm
+//Z movement range is 200mm - 304mm = 103.4mm
 
 #define X_LIMIT 0.15
 #define Y_LIMIT 0.15
 #define Z_LIMIT 0.10
 
-#define TICKS_PER_METER_X 397620
-#define TICKS_PER_METER_Y 397598
-#define TICKS_PER_METER_Z 1569273
+#define TICKS_PER_METER_X 400260
+#define TICKS_PER_METER_Y 399777
+#define TICKS_PER_METER_Z 1578642
 
 int debounceRead(int CODE){
   int one = digitalRead(CODE);
