@@ -29,8 +29,8 @@
 #define Z_LIMIT 0.10
 
 #define TICKS_PER_METER_X 400260
-#define TICKS_PER_METER_Y 399777
-#define TICKS_PER_METER_Z 1578642
+#define TICKS_PER_METER_Y 398180
+#define TICKS_PER_METER_Z 1571139
 
 int debounceRead(int CODE){
   int one = digitalRead(CODE);
